@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.ont.mapper.HolderMapper">
+    <resultMap id="BaseResultMap" type="io.ont.entity.Holder">
+        <id column="address" jdbcType="VARCHAR" property="address"/>
+        <id column="contract" jdbcType="VARCHAR" property="contract"/>
+        <result column="balance" jdbcType="BIGINT" property="balance"/>
+    </resultMap>
+
+    <insert id="batchSave">
+        INSERT INTO holder
+        (
+        address,
+        contract,
+        balance
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.address},
+            #{item.contract},
+            #{item.balance}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        balance = values(balance)
+    </insert>
+
+    <select id="selectByPage" resultMap="BaseResultMap">
+        SELECT address, contract, balance
+        FROM holder
+        WHERE contract = #{contract}
+        ORDER BY balance DESC
+            LIMIT #{from}, #{count}
+    </select>
+</mapper>
