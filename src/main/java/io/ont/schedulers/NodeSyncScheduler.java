@@ -12,11 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Future;
 
 @Component
@@ -73,8 +71,10 @@ public class NodeSyncScheduler {
                     }
                     long end = System.currentTimeMillis();
                     log.info("#####parse block:{} finished, spend:{}", currentHeight, end - start);
-                    holderMapper.batchSave(holders);
-                    holders.clear();
+                    if (!CollectionUtils.isEmpty(holders)) {
+                        holderMapper.batchSave(holders);
+                        holders.clear();
+                    }
                 } catch (Exception e) {
                     log.error("parse block error.height:{}", currentHeight, e);
                     currentHeight--;
