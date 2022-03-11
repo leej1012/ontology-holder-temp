@@ -48,6 +48,9 @@ public class ParseTransactionThread {
         Integer state = event.getInteger("State");
         BigInteger gasConsumed = event.getBigInteger("GasConsumed");
         JSONArray notifyArray = event.getJSONArray("Notify");
+        if (CollectionUtils.isEmpty(notifyArray)) {
+            return new AsyncResult<>(holders);
+        }
         JSONArray statesArray;
         Boolean needLogEvent = false;
         for (Object notifyObj : notifyArray) {
